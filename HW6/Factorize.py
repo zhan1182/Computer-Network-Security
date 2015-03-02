@@ -1,0 +1,98 @@
+#!/usr/bin/env python
+
+##  Factorize.py
+##  Author: Avi Kak
+##  Date: February 26, 2011 
+##  Modified: Febrary 25, 2012
+
+import random
+import sys
+
+def gcd(a,b):                                                            #(B1)
+    while b:                                                             #(B2)
+        a, b = b, a%b                                                    #(B3)
+    return a                                                             #(B4)
+
+def test_integer_for_prime(p):                                           #(C1)
+    probes = [2,3,5,7,11,13,17]                                          #(C2)
+    for a in probes:                                                     #(C3)
+        if a == p: return 1                                              #(C4)
+    if any([p % a == 0 for a in probes]): return 0                       #(C5)
+    k, q = 0, p-1                                                        #(C6)
+    while not q&1:                                                       #(C7)
+        q >>= 1                                                          #(C8)
+        k += 1                                                           #(C9)
+    for a in probes:                                                    #(C10)
+        a_raised_to_q = pow(a, q, p)                                    #(C11)
+        if a_raised_to_q == 1 or a_raised_to_q == p-1: continue         #(C12)
+        a_raised_to_jq = a_raised_to_q                                  #(C13)
+        primeflag = 0                                                   #(C14)
+        for j in range(k-1):                                            #(C15)
+            a_raised_to_jq = pow(a_raised_to_jq, 2, p)                  #(C16)
+            if a_raised_to_jq == p-1:                                   #(C17)
+                primeflag = 1                                           #(C18)
+                break                                                   #(C19)
+        if not primeflag: return 0                                      #(C20)
+    probability_of_prime = 1 - 1.0/(4 ** len(probes))                   #(C21)
+    return probability_of_prime                                         #(C22)
+
+
+def pollard_rho_simple(p):                                               #(D1)
+    probes = [2,3,5,7,11,13,17]                                          #(D2)
+    for a in probes:                                                     #(D3)
+        if p%a == 0: return a                                            #(D4)
+    d = 1                                                                #(D5)
+    a = random.randint(2,p)                                              #(D6)
+    random_num = []                                                      #(D7)
+    random_num.append( a )                                               #(D8)
+    while d==1:                                                          #(D9)
+        b = random.randint(2,p)                                         #(D10)
+        for a in random_num[:]:                                         #(D11)
+            d = gcd( a-b, p )                                           #(D12)
+            if d > 1: break                                             #(D13)
+        random_num.append(b)                                            #(D14)
+    return d                                                            #(D15)
+
+def pollard_rho_strong(p):                                               #(E1)
+    probes = [2,3,5,7,11,13,17]                                          #(E2)
+    for a in probes:                                                     #(E3)
+        if p%a == 0: return a                                            #(E4)
+    d = 1                                                                #(E5)
+    a = random.randint(2,p)                                              #(E6)
+    c = random.randint(2,p)                                              #(E7)
+    b = a                                                                #(E8)
+    while d==1:                                                          #(E9)
+        a = (a * a + c) % p                                             #(E10)
+        b = (b * b + c) % p                                             #(E11)
+        b = (b * b + c) % p                                             #(E12)
+        d = gcd( a-b, p)                                                #(E13)
+        if d > 1: break                                                 #(E14)
+    return d                                                            #(E15)
+
+def factorize(n):                                                        #(F1)
+    prime_factors = []                                                   #(F2)
+    factors = [n]                                                        #(F3)
+    while len(factors) != 0:                                             #(F4)
+        p = factors.pop()                                                #(F5)
+        if test_integer_for_prime(p):                                    #(F6)
+            prime_factors.append(p)                                      #(F7)
+            #print "Prime factors (intermediate result): ", prime_factors#(F8)
+            continue                                                     #(F9)
+#        d = pollard_rho_simple(p)                                      #(F10)
+        d = pollard_rho_strong(p)                                       #(F11)
+        if d == p:                                                      #(F12)
+            factors.append(d)                                           #(F13)
+        else:                                                           #(F14)
+            factors.append(d)                                           #(F15)
+            factors.append(p/d)                                         #(F16)
+    return prime_factors                                                #(F17)
+
+if __name__ == '__main__':
+
+    if len( sys.argv ) != 2:                                             #(A1)
+        sys.exit( "Call syntax:  Factorize  number" )                    #(A2)
+    p = int( sys.argv[1] )                                               #(A3)
+    factors = factorize(p)                                               #(G1)
+    print "\nFactors of ", p, ":"                                        #(G2)
+    for num in sorted(set(factors)):                                     #(G3)
+        print "    ", num, "^", factors.count(num)                       #(G4)
