@@ -4,6 +4,7 @@ __author__ = "Jinyi Zhang"
 
 from BitVector import *
 from PrimeGenerator import *
+import numpy as np
 import sys
 
 
@@ -87,7 +88,94 @@ def encryption(inputfile, public_key):
 
         cipherText.append(C_text)
 
+    #print(cipherText)
+
     return cipherText
+
+def solve_pRoot(p,y):
+    p = long(p);
+    y = long(y);
+    # Initial guess for xk
+    try:
+        xk = long(pow(y,1.0/p));
+    except:
+        # Necessary for larger value of y
+        # Approximate y as 2^a * y0
+        y0 = y;
+        a = 0;
+        while (y0 > sys.float_info.max):
+            y0 = y0 >> 1;
+            a += 1;
+        # log xk = log2 y / p
+        # log xk = (a + log2 y0) / p
+        xk = long(pow(2.0, ( a + np.log2(float(y0)) )/ p ));
+    # Solve for x using Newton's Method
+    err_k = pow(xk,p)-y;
+    while (abs(err_k) > 1):
+        gk = p*pow(xk,p-1);
+        err_k = pow(xk,p)-y;
+        xk = -err_k/gk + xk;
+    return xk
+
+
+
+def crack(key1, key2, key3, C1, C2, C3, crackfile):
+
+    fout = open(crackfile, 'w')
+
+    #e = key1[0]
+
+    n1 = key1[1]
+    n2 = key2[1]
+    n3 = key3[1]
+
+    N = n1 * n2 * n3
+
+    N1 = N / n1
+    N2 = N / n2
+    N3 = N / n3
+
+    bv_N1 = BitVector(intVal=N1)
+    bv_N2 = BitVector(intVal=N2)
+    bv_N3 = BitVector(intVal=N3)
+
+    bv_n1 = BitVector(intVal=n1)
+    bv_n2 = BitVector(intVal=n2)
+    bv_n3 = BitVector(intVal=n3)
+
+    MI_bv_N1 = bv_N1.multiplicative_inverse(bv_n1)
+    MI_bv_N2 = bv_N2.multiplicative_inverse(bv_n2)
+    MI_bv_N3 = bv_N3.multiplicative_inverse(bv_n3)
+
+    MI_N1 = int(MI_bv_N1)
+    MI_N2 = int(MI_bv_N2)
+    MI_N3 = int(MI_bv_N3)
+
+    M_List = []
+
+    for ct in range(len(C1)):
+
+        a1_bv = BitVector(textstring=C1[ct])
+        a1 = int(a1_bv)
+        a2_bv = BitVector(textstring=C2[ct])
+        a2 = int(a2_bv)
+        a3_bv = BitVector(textstring=C3[ct])
+        a3 = int(a3_bv)
+
+        M_cube = (a1 * N1 * MI_N1 + a2 * N2 * MI_N2 + a3 * N3 * MI_N3) % N
+
+        M = solve_pRoot(3, M_cube)
+
+        M_bv = BitVector(intVal=M, size=128)
+        M_List.append(M_bv.get_text_from_bitvector())
+
+    for M in M_List:
+        fout.write(M)
+
+    fout.close()
+
+
+
 
 
 if __name__ == "__main__":
@@ -100,7 +188,7 @@ if __name__ == "__main__":
 
     keyList1 = getKey()
     keyList2 = getKey()
-    KeyList3 = getKey()
+    keyList3 = getKey()
 
     public_key1 = keyList1[0]
     public_key2 = keyList2[0]
@@ -110,4 +198,4 @@ if __name__ == "__main__":
     C2 = encryption(plainTextFile, public_key2)
     C3 = encryption(plainTextFile, public_key3)
 
-    
+    crack(public_key1, public_key2, public_key3, C1, C2, C3, crakedFile)

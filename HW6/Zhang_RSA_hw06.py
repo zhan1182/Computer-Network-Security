@@ -6,6 +6,7 @@ from BitVector import *
 from PrimeGenerator import *
 import sys
 
+# Implementation of the binary GCD algorithm
 def bgcd(a,b):
     if a == b:
         return a
@@ -26,34 +27,45 @@ def bgcd(a,b):
 
     return bgcd((b - a) >> 1, a)
 
+# Get the key list using the e as 65537, which includes d, n, p and q.
 def getKey():
 
     e = 65537
 
     while 1:
         generator = PrimeGenerator(bits = 128, debug = 0)
+
+        # Generate two primes for potential p and q
         p = generator.findPrime()
         q = generator.findPrime()
 
+        # Get the bit vector for the potential p and q
         p_bv = BitVector(intVal=p, size=128)
         q_bv = BitVector(intVal=q, size=128)
 
+        # If all conditions are satisfied, then break
+        # Else, keep generating new primes and test
         if p != q:
             if p_bv[0] & p_bv[1] & q_bv[0] & q_bv[1] == 1:
                 if bgcd((p - 1), e) == 1 and bgcd((q- 1), e) == 1:
                     break
-
+    # get n
     n = p * q
+
+    # find d via the totient of n and MI of e.
     n_totient = (p - 1) * (q - 1)
     n_totient_bv = BitVector(intVal = n_totient)
+
     e_bv = BitVector(intVal = e)
     d_bv = e_bv.multiplicative_inverse(n_totient_bv)
     d = int(d_bv)
 
+    # Build the public key and private key
     public_key = [e, n]
     private_key = [d, n]
 
-    KeyList = public_key, private_key, p, q
+
+    KeyList = [public_key, private_key, p, q]
 
     #print(KeyList)
 
