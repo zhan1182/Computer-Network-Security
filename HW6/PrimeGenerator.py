@@ -68,7 +68,7 @@ class PrimeGenerator( object ):
 
 if __name__ == '__main__':
     
-    generator = PrimeGenerator( bits = 32, debug = 0 )
+    generator = PrimeGenerator( bits = 128, debug = 0 )
     prime = generator.findPrime()
     print "Prime returned: ", prime
 
