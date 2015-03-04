@@ -6,7 +6,8 @@ from BitVector import *
 from PrimeGenerator import *
 import sys
 
-# Implementation of the binary GCD algorithm
+# Implementation of the binary GCD algorithm.
+# From ECE404 Lecture 5
 def bgcd(a,b):
     if a == b:
         return a
@@ -79,26 +80,43 @@ def encryption(inputfile, outputfile, public_key):
     bv = BitVector(filename = inputfile)
 
     cipherText = []
+    cipherHex = []
 
+    # Read the bits from the inputfile
     while(bv.more_to_read):
         bitvec = bv.read_bits_from_file(128)
 
+        # append newline characters until the length reach 128
         while(bitvec.length() < 128):
             bitvec = bitvec + BitVector(textstring="\n")
 
+        # Prepend it with 128 zeros on the left to make it a 256-bit block
         bitvec.pad_from_left(128)
 
+        # Get the corresponding integer value
         M = int(bitvec)
 
+        # Do the encryption
         e = public_key[0]
         n = public_key[1]
         C = pow(M, e, n)
 
+        # Build the cipher-text list
         C_bv = BitVector(intVal=C, size=256)
         C_text = C_bv.get_text_from_bitvector()
+        C_HEX = C_bv.get_hex_string_from_bitvector()
 
+        cipherHex.append(C_HEX)
         cipherText.append(C_text)
 
+
+    fhex = open("EncryptionHEX.txt", 'w')
+    for C_hex in cipherHex:
+        fhex.write(C_hex)
+    fhex.close()
+
+
+    # Output the bits in text format
     for C_text in cipherText:
         fout.write(C_text)
 
@@ -111,10 +129,13 @@ def decryption(inputfile, outputfile, private_key, p, q):
 
     bv = BitVector(filename=inputfile)
     plainText = []
+    plainHEX = []
 
+    # Get the d and n of the private key
     d = private_key[0]
     n = private_key[1]
 
+    # Calculate the MI of p and q
     p_bv = BitVector(intVal=p)
     q_bv = BitVector(intVal=q)
 
@@ -124,12 +145,15 @@ def decryption(inputfile, outputfile, private_key, p, q):
     p_MI = int(p_MI_bv)
     q_MI = int(q_MI_bv)
 
+    # Read the bits from the input file
     while bv.more_to_read:
 
         bitvector = bv.read_bits_from_file(256)
 
+        # Get the corresponding cipher integer C
         C = int(bitvector)
 
+        # Do the decryption, get the integer corresponding to the plaintext M
         Vp = pow(C, d, p)
         Vq = pow(C, d, q)
 
@@ -137,15 +161,28 @@ def decryption(inputfile, outputfile, private_key, p, q):
         Xq = p * p_MI
 
         M = (Vp * Xp + Vq * Xq) % n
+
+        # Build the plain text list
         M_bv = BitVector(intVal=M, size=128)
         M_text = M_bv.get_text_from_bitvector()
-        plainText.append(M_text)
 
+        M_HEX = M_bv.get_hex_string_from_bitvector()
+
+
+        plainText.append(M_text)
+        plainHEX.append(M_HEX)
+
+    fhex = open("decryptionHEX.txt", 'w')
+    for M_HEX in plainHEX:
+        fhex.write(M_HEX)
+
+    fhex.close()
+
+    # Output the plaintext
     for M_text in plainText:
         fout.write(M_text)
 
     fout.close()
-
 
 
 if __name__ == "__main__":
@@ -171,6 +208,11 @@ if __name__ == "__main__":
     private_key = keyList[1]
     p = keyList[2]
     q = keyList[3]
+    d = private_key[0]
+
+    print(p)
+    print(q)
+    print(d)
 
     encryption(plainTextFile, encryptedfile, public_key)
     decryption(encryptedfile, decryptedfile, private_key, p , q)
