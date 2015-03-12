@@ -5,6 +5,26 @@ __author__ = 'Jinyi Zhang'
 from BitVector import *
 import sys
 
+
+def geta_0(word):
+
+    word_copy1 = word.deep_copy();
+    word_copy2 = word.deep_copy();
+    word_copy3 = word.deep_copy();
+    retbv = (word_copy1 >> 1) ^ (word_copy2 >> 8) ^ (word_copy3.shift_right(7));
+
+    return retbv
+
+def geta_1(word):
+
+    word_copy1 = word.deep_copy();
+    word_copy2 = word.deep_copy();
+    word_copy3 = word.deep_copy();
+    retbv = (word_copy1 >> 19) ^ (word_copy2 >> 61) ^ (word_copy3.shift_right(6));
+
+    return retbv
+
+
 if __name__ == "__main__":
 
     if len(sys.argv) != 2:
@@ -81,19 +101,39 @@ if __name__ == "__main__":
         words[0:16] = [block[i:i + 64] for i in range(0, 1024, 64)]
 
         for i in range(16, 80):
-            a_0 = (words[i - 15] >> 1) ^ (words[i - 15] >> 8) ^ words[i - 15].shift_right(7)
-            a_1 = (words[i - 2] >> 19) ^ (words[i - 2] >> 61) ^ words[i - 2].shift_right(6)
+            a_0 = geta_0(words[i - 15])
+            a_1 = geta_1(words[i - 2])
             words[i] = BitVector(intVal=(((int(words[i - 16]) + int(a_0)) % (2 ** 64)) + (
                 (int(words[i - 7]) + int(a_1)) % (2 ** 64))) % (2 ** 64), size=64)
 
     for i in range(80):
-        Ch = (e & f) ^ (~e & g)
-        Maj = (a & b) ^ (a & c) ^ (b & c)
+        e_copy_ch1 = e.deep_copy()
+        e_copy_ch2 = e.deep_copy()
 
-        a_copy = a.deep_copy()
-        sum_a = (a_copy >> 28) ^ (a_copy >> 34) ^ (a_copy >> 39)
-        e_copy = e.deep_copy()
-        sum_e = (e_copy >> 14) ^ (e_copy >> 18) ^ (e_copy >> 41)
+        f_copy_ch = f.deep_copy()
+        g_copy_ch = g.deep_copy()
+
+        a_copy_ch1 = a.deep_copy()
+        a_copy_ch2 = a.deep_copy()
+
+        b_copy_ch1 = b.deep_copy()
+        b_copy_ch2 = b.deep_copy()
+
+        c_copy_ch1 = c.deep_copy()
+        c_copy_ch2 = c.deep_copy()
+
+        Ch = (e_copy_ch1 & f_copy_ch) ^ (~e_copy_ch2 & g_copy_ch)
+        Maj = (a_copy_ch1 & b_copy_ch1) ^ (a_copy_ch2 & c_copy_ch1) ^ (b_copy_ch2 & c_copy_ch2)
+
+        a_copy1 = a.deep_copy()
+        a_copy2 = a.deep_copy()
+        a_copy3 = a.deep_copy()
+        sum_a = (a_copy1 >> 28) ^ (a_copy2 >> 34) ^ (a_copy3 >> 39)
+
+        e_copy1 = e.deep_copy()
+        e_copy2 = e.deep_copy()
+        e_copy3 = e.deep_copy()
+        sum_e = (e_copy1 >> 14) ^ (e_copy2 >> 18) ^ (e_copy3 >> 41)
 
         T1 = (((((int(h) + int(Ch)) % (2 ** 64)) + int(sum_e)) % (2 ** 64)) + (
             (int(words[i]) + int(K[i])) % (2 ** 64))) % (2 ** 64)

@@ -14,11 +14,11 @@ if __name__ == "__main__":
 
     message = fin.read().strip("\n")
 
-    #MD_sha512 = hashlib.sha512(message)
-    MD_sha1 = hashlib.sha1(message)
+    MD_sha512 = hashlib.sha512(message)
+    #MD_sha1 = hashlib.sha1(message)
 
-    #print(MD_sha512.hexdigest())
-    print(MD_sha1.hexdigest())
+    print(MD_sha512.hexdigest())
+    #print(MD_sha1.hexdigest())
 
     fin.close()
 
