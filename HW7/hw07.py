@@ -28,7 +28,7 @@ if __name__ == "__main__":
     g = BitVector(hexstring = '1f83d9abfb41bd6b')
     h = BitVector(hexstring = '5be0cd19137e2179')
 
-    # initialize K (jeezus)
+    # initialize K
     K = [0x428a2f98d728ae22, 0x7137449123ef65cd, 0xb5c0fbcfec4d3b2f, 0xe9b5dba58189dbbc,
 	    0x3956c25bf348b538, 0x59f111f1b605d019, 0x923f82a4af194f9b, 0xab1c5ed5da6d8118,
         0xd807aa98a3030242, 0x12835b0145706fbe, 0x243185be4ee4b28c, 0x550c7dc3d5ffb4e2,
@@ -49,3 +49,19 @@ if __name__ == "__main__":
         0x06f067aa72176fba, 0x0a637dc5a2c898a6, 0x113f9804bef90dae, 0x1b710b35131c471b,
         0x28db77f523047d84, 0x32caab7b40c72493, 0x3c9ebe0a15c9bebc, 0x431d67c49c100d4c,
         0x4cc5d4becb3e42b6, 0x597f299cfc657e2a, 0x5fcb6fab3ad6faec, 0x6c44198c4a475817]
+
+    message = fin.read()
+
+    bv = BitVector(textstring = message)
+
+    length = bv.length()
+    bv1 = bv + BitVector(bitstring="1")
+    length1 = bv1.length()
+
+    howmanyzeros = (896 - length1) % 1024
+    zerolist = [0] * howmanyzeros
+    bv2 = bv1 + BitVector(bitlist = zerolist)
+    bv3 = BitVector(intVal = length, size = 128)
+    bv4 = bv2 + bv3
+
+
