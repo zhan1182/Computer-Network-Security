@@ -4,7 +4,6 @@ __author__ = 'Jinyi Zhang'
 
 from BitVector import *
 import sys
-import copy
 
 if __name__ == "__main__":
 
@@ -16,7 +15,7 @@ if __name__ == "__main__":
         fin = open(sys.argv[1], 'r')
         fout = open("output.txt", 'w')
     except:
-        print("Can't open the file.")
+        print("Can't open the files.")
         sys.exit(2)
 
     # initialize the hash buffer
@@ -28,6 +27,15 @@ if __name__ == "__main__":
     f = BitVector(hexstring='9b05688c2b3e6c1f')
     g = BitVector(hexstring='1f83d9abfb41bd6b')
     h = BitVector(hexstring='5be0cd19137e2179')
+
+    a_add = a.deep_copy()
+    b_add = b.deep_copy()
+    c_add = c.deep_copy()
+    d_add = d.deep_copy()
+    e_add = e.deep_copy()
+    f_add = f.deep_copy()
+    g_add = g.deep_copy()
+    h_add = h.deep_copy()
 
     # initialize K
     K = [0x428a2f98d728ae22, 0x7137449123ef65cd, 0xb5c0fbcfec4d3b2f, 0xe9b5dba58189dbbc,
@@ -81,20 +89,43 @@ if __name__ == "__main__":
         Ch = (e & f) ^ (~e & g)
         Maj = (a & b) ^ (a & c) ^ (b & c)
 
-    a_copy = a.deep_copy()
-    sum_a = (a_copy >> 28) ^ (a_copy >> 34) ^ (a_copy >> 39)
-    e_copy = e.deep_copy()
-    sum_e = (e_copy >> 14) ^ (e_copy >> 18) ^ (e_copy >> 41)
+        a_copy = a.deep_copy()
+        sum_a = (a_copy >> 28) ^ (a_copy >> 34) ^ (a_copy >> 39)
+        e_copy = e.deep_copy()
+        sum_e = (e_copy >> 14) ^ (e_copy >> 18) ^ (e_copy >> 41)
 
-    T1 = (((((int(h) + int(Ch_efg)) % (2 ** 64)) + int(sum_e)) % (2 ** 64)) + (
-        (int(words[i]) + int(K[i])) % (2 ** 64))) % (2 ** 64)
-    T2 = (int(sum_a) + int(Maj_abc)) % (2 ** 64)
+        T1 = (((((int(h) + int(Ch)) % (2 ** 64)) + int(sum_e)) % (2 ** 64)) + (
+            (int(words[i]) + int(K[i])) % (2 ** 64))) % (2 ** 64)
+        T2 = (int(sum_a) + int(Maj)) % (2 ** 64)
 
-    h = g
-    g = f
-    f = e
-    e = BitVector(intVal=(int(d) + int(T1)) % (2 ** 64), size=64)
-    d = c
-    c = b
-    b = a
-    a = BitVector(intVal=(int(T1) + int(T2)) % (2 ** 64), size=64)
+        h = g
+        g = f
+        f = e
+        e = BitVector(intVal=(int(d) + int(T1)) % (2 ** 64), size=64)
+        d = c
+        c = b
+        b = a
+        a = BitVector(intVal=(int(T1) + int(T2)) % (2 ** 64), size=64)
+
+    a_out = BitVector(intVal=(int(a) + int(a_add)) % (2 ** 64), size=64)
+    b_out = BitVector(intVal=(int(b) + int(b_add)) % (2 ** 64), size=64)
+    c_out = BitVector(intVal=(int(c) + int(c_add)) % (2 ** 64), size=64)
+    d_out = BitVector(intVal=(int(d) + int(d_add)) % (2 ** 64), size=64)
+    e_out = BitVector(intVal=(int(e) + int(e_add)) % (2 ** 64), size=64)
+    f_out = BitVector(intVal=(int(f) + int(f_add)) % (2 ** 64), size=64)
+    g_out = BitVector(intVal=(int(g) + int(g_add)) % (2 ** 64), size=64)
+    h_out = BitVector(intVal=(int(h) + int(h_add)) % (2 ** 64), size=64)
+
+    Message_digest = a_out + b_out + c_out + d_out + e_out + f_out + g_out + h_out
+    MD_hex = Message_digest.getHexStringFromBitVector()
+
+    fout.write(MD_hex)
+
+    fin.close()
+    fout.close()
+
+
+
+
+
+
