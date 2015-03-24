@@ -36,9 +36,16 @@ class TcpAttack:
 
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-        s.settimeout(5)
+        s.settimeout(2)
 
-        
+        result = s.connect_ex((self.targetIP, port))
+
+        if (result == 0):
+            for ct in range(1000):
+
+
+        else:
+            return 0
 
 if __name__ == "__main__":
 
