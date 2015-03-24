@@ -1,0 +1,53 @@
+
+
+tcpdump -v -n host 192.168.1.105 
+
+tcpdump -vvv -nn -i eth0 -s 1514 host 192.168.1.105 -S -X -c 5
+
+tcpdump -vvv -nn -i wlan0 -s 1514 host 192.168.1.105 -S -X -c 5
+
+tcpdump -nnvvvXSs 1514 host 192.168.1.105 and dst port 22
+
+tcpdump -vvv -nn -i eth0 -s 1514 -S -X -c 5 'src 192.168.1.102' or 'dst 192.168.1.102 and port 22'
+
+tcpdump -vvv -nn -i eth0 -s 1514 -S -X -c 5 src or dst 71.98.70.149
+
+tcpdump -vvv -nn -i wlan0 -s 1514 -S -X -c 5 'src 192.168.1.102' or 'dst 192.168.1.102 and port 22'
+
+=====================================================================================
+
+For demonstration general things with tcpdump:
+
+tcpdump udp -i wlan0           for seeing all UDP packets captured by just the wireless interface
+
+tcpdump udp -i any -c 10       for seeing all UDP traffic captured by all interfaces (including the lo interface)
+
+
+
+FOR DEMONSTRATING IN CLASS THE 3-WAY HANDSHAKE as you are
+trying to make an SSH connection with a remote machine:
+
+tcpdump -vvv -nn -i wlan0 -s 1514 -S -X -c 5 'src 10.184.65.200' or 'dst 10.184.65.200 and port 22'
+
+
+
+=====================================================================================
+
+FOR DOS4 INVOCATION:
+
+    DoS4.pl  10.185.45.126  46345  128.46.4.72  80  1               (as root)
+
+and one of:
+
+tcpdump -vvv -nn -i eth0 src or dst 192.168.1.105  -s 1514 -S -X
+
+tcpdump -vvv -nn -i wlan0 src or dst 192.168.1.105  -s 1514 -S -X
+
+tcpdump -vvv -nn -i eth0 src or dst 192.168.1.105 and port 46345 -s 1514 -S -X
+
+tcpdump -vvv -nn -i wlan0 src or dst 192.168.1.105 and port 46345 -s 1514 -S -X
+
+tcpdump -vvv -nn -i wlan0 src or dst 10.184.65.200 and port 46345 -s 1514 -S -X
+
+
+ 

@@ -137,6 +137,7 @@ def decryption(inputfile, outputfile, private_key, p, q):
 
     # Calculate the MI of p and q
     p_bv = BitVector(intVal=p)
+
     q_bv = BitVector(intVal=q)
 
     p_MI_bv = p_bv.multiplicative_inverse(q_bv)

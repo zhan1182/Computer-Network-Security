@@ -218,10 +218,13 @@ if __name__ == "__main__":
     public_key2 = getKey()
     public_key3 = getKey()
 
+    print("n1 = ")
     print(public_key1[1])
+    print("n2 = ")
     print(public_key2[1])
+    print("n3 = ")
     print(public_key3[1])
-
+    print("--------------------------------")
 
     # Do the encryption three times
     C1 = encryption(plainTextFile, public_key1)
