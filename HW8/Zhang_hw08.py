@@ -3,6 +3,7 @@
 __author__ = 'Jinyi Zhang'
 
 import socket
+import scapy
 
 class TcpAttack:
 
