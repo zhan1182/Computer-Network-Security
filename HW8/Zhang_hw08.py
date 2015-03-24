@@ -3,6 +3,7 @@
 __author__ = 'Jinyi Zhang'
 
 import socket
+import scapy
 
 class TcpAttack:
 
@@ -33,10 +34,10 @@ class TcpAttack:
         f.close()
 
     def attackTarget(self, port):
+        
+        #s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-        s.settimeout(5)
+        #s.settimeout(5)
 
         
 
