@@ -1,0 +1,4 @@
+1. have scapy installed in the computer
+2. $:sudo -s #get the root permission
+3. $:tcpdump -i eht0 -vnn -c 10 'src 127.0.0.1' and 'dst 128.46.75.105'
+4. $:python Zhang_hw08.py
