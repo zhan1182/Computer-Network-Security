@@ -1,0 +1,26 @@
+tcpdump -i eth0 -vnn -c 10 'src 127.0.0.1' and 'dst 128.46.75.105'
+tcpdump: listening on eth0, link-type EN10MB (Ethernet), capture size 65535 bytes
+21:29:37.721078 IP (tos 0x0, ttl 64, id 1, offset 0, flags [none], proto TCP (6), length 40)
+    127.0.0.1.29683 > 128.46.75.105.80: Flags [S], cksum 0xd106 (correct), seq 0, win 8192, length 0
+21:29:37.764099 IP (tos 0x0, ttl 64, id 1, offset 0, flags [none], proto TCP (6), length 40)
+    127.0.0.1.37467 > 128.46.75.105.80: Flags [S], cksum 0xb29e (correct), seq 0, win 8192, length 0
+21:29:37.810038 IP (tos 0x0, ttl 64, id 1, offset 0, flags [none], proto TCP (6), length 40)
+    127.0.0.1.3318 > 128.46.75.105.80: Flags [S], cksum 0x3804 (correct), seq 0, win 8192, length 0
+21:29:37.909638 IP (tos 0x0, ttl 64, id 1, offset 0, flags [none], proto TCP (6), length 40)
+    127.0.0.1.60532 > 128.46.75.105.80: Flags [S], cksum 0x5885 (correct), seq 0, win 8192, length 0
+21:29:37.993930 IP (tos 0x0, ttl 64, id 1, offset 0, flags [none], proto TCP (6), length 40)
+    127.0.0.1.25658 > 128.46.75.105.80: Flags [S], cksum 0xe0bf (correct), seq 0, win 8192, length 0
+21:29:38.054239 IP (tos 0x0, ttl 64, id 1, offset 0, flags [none], proto TCP (6), length 40)
+    127.0.0.1.43585 > 128.46.75.105.80: Flags [S], cksum 0x9ab8 (correct), seq 0, win 8192, length 0
+21:29:38.109513 IP (tos 0x0, ttl 64, id 1, offset 0, flags [none], proto TCP (6), length 40)
+    127.0.0.1.36891 > 128.46.75.105.80: Flags [S], cksum 0xb4de (correct), seq 0, win 8192, length 0
+21:29:38.194941 IP (tos 0x0, ttl 64, id 1, offset 0, flags [none], proto TCP (6), length 40)
+    127.0.0.1.57605 > 128.46.75.105.80: Flags [S], cksum 0x63f4 (correct), seq 0, win 8192, length 0
+21:29:38.248560 IP (tos 0x0, ttl 64, id 1, offset 0, flags [none], proto TCP (6), length 40)
+    127.0.0.1.53851 > 128.46.75.105.80: Flags [S], cksum 0x729e (correct), seq 0, win 8192, length 0
+21:29:38.328971 IP (tos 0x0, ttl 64, id 1, offset 0, flags [none], proto TCP (6), length 40)
+    127.0.0.1.61060 > 128.46.75.105.80: Flags [S], cksum 0x5675 (correct), seq 0, win 8192, length 0
+10 packets captured
+10 packets received by filter
+0 packets dropped by kernel
+
